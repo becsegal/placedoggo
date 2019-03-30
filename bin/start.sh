@@ -1,0 +1,1 @@
+DEBUG=placedoggo:* supervisor -w ../placedoggo -e hbs,js,json bin/www
