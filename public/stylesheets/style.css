@@ -1,8 +1,30 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; 
+  text-align: center;
+}
 
 a {
-  color: #00B7FF; }
+  color: #00B7FF; 
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.demo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 420px;
+  padding: 0;
+  margin: 0;
+}
+
+.demo img {
+  margin-top: 20px;
+}
+
 
 /*# sourceMappingURL=style.css.map */
