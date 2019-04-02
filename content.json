@@ -1,6 +1,16 @@
 [
   {
-    "url": "public/images/bowie_bow.jpg"
+    "url": "public/images/bowie_bow.jpg",
+    "resize": { "position": "left bottom" },
+    "focal_point": { "x": 1, "y": 1 }
+  },
+  {
+    "url": "public/images/bowie_bow.jpg",
+    "resize": { "position": "left" }
+  },
+  {
+    "url": "public/images/bowie_bow.jpg",
+    "resize": { "position": "center" }
   },
   {
     "url": "public/images/bowie_fall.jpg"

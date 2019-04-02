@@ -53,8 +53,29 @@ h1 {
 .code {
   box-sizing: border-box;
   font-family: Courier New, monospace;
-  font-size: 1em;
   font-weight: bold;
+}
+
+/* content pages */
+.source {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.source .col {
+  width: 40%;
+  text-align: left;
+}
+table { 
+  margin-left: 10px;
+}
+td {
+  padding-bottom: 8px;
+}
+.resize_options {
+  text-align: left;
 }
 
 /*# sourceMappingURL=style.css.map */

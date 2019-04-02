@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var hbs = require('hbs');
 
 var indexRouter = require('./routes/index');
 
@@ -36,4 +37,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+hbs.registerHelper('json', function(context) {
+  return JSON.stringify(context, null, 2);
+});
 module.exports = app;
