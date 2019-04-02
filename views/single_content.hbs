@@ -1,0 +1,128 @@
+<html>
+<head>
+  <title>placedoggo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Image {{n}}</h1>
+  <div class='source'>
+    <div class='col'>
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class='col'>
+      <code>
+        <table>
+          <tr><td>original width:</td><td><span id='origWidth'>{{content.width}}</span></td></tr>
+          <tr><td>original height:</td><td><span id='origHeight'>{{content.height}}</span></td></tr>
+          <tr><td>current width:</td><td><span id='curWidth'></span></td></tr>
+          <tr><td>current height:</td><td><span id='curHeight'></span></td></tr>
+          <tr><td>dest width:</td><td><input id='destWidth' /></td></tr>
+          <tr><td>dest height:</td><td><input id='destHeight' /></td></tr>
+          <tr><td>focal x%</td><td> <span id='focalXPer'>{{content.focal_point.x}}</span></td></tr>
+          <tr><td>focal y%</td><td> <span id='focalYPer'>{{content.focal_point.y}}</span></td></tr>
+          <tr><td>focal x:</td><td><span id='focalX'></span></td></tr>
+          <tr><td>focal y:</td><td><span id='focalY'></span></td></tr>
+          <tr><td>extract left:</td><td><span id='extLeft'></span></td></tr>
+          <tr><td>extract top:</td><td><span id='extTop'></span></td></tr>
+          <tr><td>extract width:</td><td><span id='extWidth'></span></td></tr>
+          <tr><td>extract height:</td><td><span id='extHeight'></span></td></tr>
+          <tr><td>preview left:</td><td><span id='prevLeft'></span></td></tr>
+          <tr><td>preview top:</td><td><span id='prevTop'></span></td></tr>
+          <tr><td>preview width:</td><td><span id='prevWidth'></span></td></tr>
+          <tr><td>preview height:</td><td><span id='prevHeight'></span></td></tr>
+        </table>
+      </code>
+    </div>
+  </div>
+  <div class='output'>
+  </div>
+  <img id='orig' src='/null/500?n={{n}}' style='visibility: hidden' />
+
+  <script type='text/javascript'>
+    function recalculate(data) {
+      data.destRatio = data.destWidth / data.destHeight;
+      if (data.origRatio >= data.destRatio) { // narrower
+        data.extWidth = data.destWidth / data.destHeight * data.origHeight;
+        data.extHeight = data.origHeight;
+        data.extLeft = data.focalX - data.extWidth / 2;
+        data.extLeft = data.extLeft < 0 ? 0 : data.extLeft;
+        data.extLeft = data.extLeft > data.origWidth ? data.origWidth - data.extWidth : data.extLeft;
+        data.extTop = 0;
+      } else {
+        data.extWidth = data.origWidth;
+        data.extHeight = data.destHeight / data.destWidth * data.origWidth;            
+        data.extLeft = 0;
+        data.extTop = data.focalY - data.extHeight / 2;
+        data.extTop = data.extTop < 0 ? 0 : data.extTop;
+        data.extTop = data.extTop > data.origHeight ? data.origHeight - data.extHeight : data.extTop;
+      }
+      data.prevLeft = data.extLeft  * data.curWidth / data.origWidth;
+      data.prevTop = data.extTop  * data.curHeight / data.origHeight;
+      data.prevWidth = data.curWidth * data.extWidth/data.origWidth;
+      data.prevHeight = data.curHeight * data.extHeight/data.origHeight;
+      return data;
+    }
+
+    function updateDisplay(data) {
+      console.log(data);
+      var img = document.getElementById("orig");  
+      var c = document.getElementById("canvas");
+      var ctx = c.getContext("2d");
+      ctx.canvas.width  = data.curWidth;
+      ctx.canvas.height = data.curHeight;
+      ctx.drawImage(img,0,0); 
+      ctx.drawImage(img,0,0); 
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "red";
+      ctx.rect(event.offsetX, event.offsetY, 1, 1); 
+      ctx.stroke();
+      
+      ctx.rect(data.prevLeft, data.prevTop,  data.prevWidth - ctx.lineWidth/2,  data.prevHeight - ctx.lineWidth/2); 
+      ctx.stroke();
+
+      Object.keys(data).forEach(function(key) {
+        $('#'+key).html(data[key]);
+      });
+    }; 
+
+    $(window).on("load", function() {
+      var $img = $('#orig');
+
+      var data = {
+        origWidth: $('#origWidth').html(),
+        origHeight: $('#origHeight').html(),
+        focalXPer: $('#focalXPer').html(),
+        focalYPer: $('#focalYPer').html()
+      };
+      data.focalX = data.focalXPer === undefined ? data.origWidth/2 : data.focalXPer * data.origWidth;
+      data.focalY = data.focalYPer === undefined ? data.origHeight/2 : data.focalYPer * data.origHeight;
+      data.curWidth = $img.width();
+      data.curHeight = $img.height();
+      data.origRatio = data.origWidth/data.origHeight;
+
+      $img.css('height', 0);
+      updateDisplay(data);
+
+
+
+      $( "#canvas" ).click(function( event ) {
+        data.focalXPer = event.offsetX / data.curWidth;
+        data.focalYPer = event.offsetY / data.curHeight;
+        data.focalX = data.focalXPer * data.origWidth;
+        data.focalY = data.focalYPer * data.origHeight;
+        data = recalculate(data);
+        updateDisplay(data);
+      });
+
+      $( "input" ).blur(function (event) {
+        data[event.target.id] = parseInt(event.target.value);
+        if ( data.destHeight !== undefined && data.destWidth !== undefined ) {
+          data = recalculate(data);
+          updateDisplay(data);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
